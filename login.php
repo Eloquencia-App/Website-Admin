@@ -4,6 +4,13 @@ include 'config.php';
 include 'Utils.php';
 $utils = new Utils();
 
+if(isset($_GET['error']) && $_GET['error'] == 'disconnected') {
+    $error = [
+        'type' => 'danger',
+        'message' => 'Vous avez été déconnecté'
+    ];
+}
+
 if (isset($_POST['submit'])) {
     $req = $db->prepare('SELECT COUNT(*) FROM admins WHERE email = :email AND password = :password');
     $req->execute(array(
@@ -14,6 +21,10 @@ if (isset($_POST['submit'])) {
     if ($req[0] == 1) {
         $token = rand(1000000, 9999999);
         $req = $db->prepare('UPDATE admins SET cookie = :cookie WHERE email = :email');
+        $req->execute(array(
+            'cookie' => $token,
+            'email' => htmlspecialchars($_POST['email'])
+        ));
         if (isset($_POST['remember'])) {
             setcookie('token', $token, time() + 24*365*3600, null, null, false, true);
         } else {
