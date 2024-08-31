@@ -1,17 +1,13 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+include 'config.php';
+include 'Utils.php';
 
-//include 'config.php';
-//include 'Utils.php';
+$utils = new Utils();
 
-//$utils = new Utils();
-
-//if (!$utils->checkCookie('token')) {
-//    header('Location: login.php?error=disconnected');
-//}
+if (!$utils->checkCookie('token')) {
+    header('Location: login.php?error=disconnected');
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -31,7 +27,6 @@ error_reporting(E_ALL);
     <title>Accueil - Eloquéncia</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <script src="js/bootstrap.js"></script>
-<!-- fontawesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.6.0/css/all.css">
 <body>
 <nav class="navbar navbar-expand-lg bg-body-secondary">
