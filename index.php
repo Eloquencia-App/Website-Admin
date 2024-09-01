@@ -42,7 +42,7 @@ if (!$utils->checkCookie('token')) {
             <div class="navbar-nav">
                 <a class="nav-link" href="#">Accueil</a>
                 <a class="nav-link" href="lessons">Leçons</a>
-                <a class="nav-link" href="discount">Remises</a>
+                <a class="nav-link" href="discounts">Remises</a>
                 <a class="nav-link" href="contact">Contact</a>
             </div>
         </div>

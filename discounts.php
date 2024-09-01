@@ -2,6 +2,9 @@
 
 include 'config.php';
 include 'Utils.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 $utils = new Utils();
 
@@ -9,12 +12,47 @@ if (!$utils->checkCookie('token')) {
     header('Location: login.php?error=disconnected');
 }
 
-if (isset($_GET['delete']) && isset($_GET['id'])) {
-    $req = $db->prepare('DELETE FROM lessons WHERE ID = :id');
+if (isset($_GET['accept']) && isset($_GET['id'])) {
+    $req = $db->prepare('UPDATE discounts SET state = 1 WHERE ID = :id');
     $req->execute(array(
         'id' => $_GET['id']
     ));
-    header('Location: lessons.php');
+    $req = $db->prepare('SELECT email FROM discounts WHERE ID = :id');
+    $req->execute(array(
+        'id' => $_GET['id']
+    ));
+    $email = $req->fetch();
+    $req = $db->prepare('SELECT code FROM discounts_codes WHERE email IS NULL');
+    $req->execute();
+    $code = $req->fetch();
+    $req = $db->prepare('UPDATE discounts_codes SET email = :email WHERE code = :code');
+    $req->execute(array(
+        'email' => $email['email'],
+        'code' => $code['code']
+    ));
+    $utils->sendValidDiscountEmail($email['email'], $code['code']);
+    header('Location: discounts.php');
+}
+
+if (isset($_GET['refuse']) && isset($_GET['id'])) {
+    $req = $db->prepare('UPDATE discounts SET state = 2 WHERE ID = :id');
+    $req->execute(array(
+        'id' => $_GET['id']
+    ));
+    $req = $db->prepare('SELECT email FROM discounts WHERE ID = :id');
+    $req->execute(array(
+        'id' => $_GET['id']
+    ));
+    $email = $req->fetch();
+    $utils->sendInvalidDiscountEmail($email['email']);
+    header('Location: discounts.php');
+}
+
+
+if (isset($_GET['proof']) && isset($_GET['id'])) {
+    $data = $utils->getProof($_GET['id']);
+    echo $data;
+    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -32,7 +70,7 @@ if (isset($_GET['delete']) && isset($_GET['id'])) {
     <meta property="og:site" content="https://eloquencia.org">
     <meta property="og:title" content="Accueil">
     <meta property="og:description" content="Eloquéncia est une association loi 1901 visant à promouvoir l'éloquence et l'art oratoire">
-    <title>Leçons - Eloquéncia</title>
+    <title>Réductions - Eloquéncia</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <script src="js/bootstrap.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.6.0/css/all.css">
@@ -49,8 +87,8 @@ if (isset($_GET['delete']) && isset($_GET['id'])) {
         <div class="collapse navbar-collapse" id="navbarNav">
             <div class="navbar-nav">
                 <a class="nav-link" href="./">Accueil</a>
-                <a class="nav-link" href="#">Leçons</a>
-                <a class="nav-link" href="discounts">Remises</a>
+                <a class="nav-link" href="lessons">Leçons</a>
+                <a class="nav-link" href="#">Remises</a>
                 <a class="nav-link" href="contact">Contact</a>
             </div>
         </div>
@@ -59,31 +97,30 @@ if (isset($_GET['delete']) && isset($_GET['id'])) {
 <div class="container">
     <div class="row">
         <div class="col-12 text-center">
-            <h1 class="display-1">Leçons</h1>
-            <a href="addLesson" class="btn btn-primary">Ajouter une leçon</a>
+            <h1 class="display-1">Réductions</h1>
         </div>
     </div>
     <div class="row mt-4 d-flex justify-content-center">
         <table class="table table-striped table-hover table-responsive">
             <thead>
             <tr>
-                <th>Titre</th>
-                <th>Contenu</th>
+                <th>Demandeur</th>
+                <th>Adresse mail</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             <?php
-            $req = $db->prepare('SELECT ID, title, summary FROM lessons');
+            $req = $db->prepare('SELECT ID, name, email, state FROM discounts WHERE state = 0');
             $req->execute();
-            $lessons = $req->fetchAll();
-            foreach ($lessons as $lesson) {
+            $requests = $req->fetchAll();
+            foreach ($requests as $request) {
                 ?>
                 <tr>
-                    <td><?= $lesson['title'] ?></td>
-                    <td><?= $lesson['summary'] ?></td>
+                    <td><?= $request['name'] ?></td>
+                    <td><?= $request['email'] ?></td>
                     <td>
-                        <button class="btn btn-danger" onclick="deleteLesson('<?= $lesson['title']?>',<?= $lesson['ID']?>)"><i class="fas fa-trash"></i></button>
+                        <button class="btn btn-primary" onclick="showRequest('<?= $request['name']?>', '<?= $request['email']?>', '<?= $request['ID']?>')"><i class="fas fa-eye"></i></button>
                     </td>
                 </tr>
                 <?php
@@ -93,19 +130,20 @@ if (isset($_GET['delete']) && isset($_GET['id'])) {
         </table>
     </div>
 </div>
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Suppression d'une leçon</h5>
+                <h5 class="modal-title" id="requestModalLabel">Demande de XXX </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="deleteModalBody">
-                Êtes-vous sûr de vouloir supprimer la leçon ?
+            <div class="modal-body" id="requestModalBody">
+                <div id="requestModalProof"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <a href="" class="btn btn-danger" id="deleteModalButton">Supprimer</a>
+                <a href="" class="btn btn-danger" id="refuseModalButton">Refuser</a>
+                <a href="" class="btn btn-success" id="confirmModalButton">Valider</a>
             </div>
         </div>
     </div>
@@ -118,11 +156,19 @@ if (isset($_GET['delete']) && isset($_GET['id'])) {
 </footer>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    function deleteLesson(title, id) {
-        $('#deleteModalButton').attr('href', 'lessons.php?delete&id=' + id);
-        $('#deleteModalBody').html('Êtes-vous sûr de vouloir supprimer la leçon \"' + title + '\" ?');
+    function showRequest(name, email, id) {
+        $.ajax({
+            url: 'discounts.php?proof&id=' + id,
+            type: 'GET',
+            success: function (data) {
+                $('#requestModalProof').html('<img src="data:image/png;base64,' + data + '" class="img-fluid">');
+            }
+        });
+        $('#confirmModalButton').attr('href', 'discounts.php?accept&id=' + id);
+        $('#refuseModalButton').attr('href', 'discounts.php?refuse&id=' + id);
+        $('#requestModalLabel').html('Demande de ' + name);
 
-        $('#deleteModal').modal('show');
+        $('#requestModal').modal('show');
     }
 
 </script>
