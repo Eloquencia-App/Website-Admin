@@ -9,7 +9,7 @@ include 'Utils.php';
 
 $utils = new Utils();
 
-if (!$utils->checkCookie('token')) {
+if (!$utils->checkCookie('token_admin')) {
     header('Location: login.php?error=disconnected');
 }
 

@@ -9,7 +9,7 @@ class Utils
     public function checkCookie($cookie) {
         include 'config.php';
         if(isset($_COOKIE[$cookie])) {
-            $req = $db->prepare('SELECT COUNT(*) FROM admins WHERE cookie = :cookie');
+            $req = $db->prepare('SELECT COUNT(*) FROM tokens_admin WHERE token = :cookie');
             $req->execute(array(
                 'cookie' => $_COOKIE[$cookie]
             ));

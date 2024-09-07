@@ -20,16 +20,19 @@ if (isset($_POST['submit'])) {
     $req = $req->fetch();
     if ($req[0] == 1) {
         $token = rand(1000000, 9999999);
-        $req = $db->prepare('UPDATE admins SET cookie = :cookie WHERE email = :email');
+        if (isset($_POST['remember'])) {
+            setcookie('token_admin', $token, time() + 24*365*3600, null, null, false, true);
+            $expiration = date('Y-m-d H:i:s', time() + 24*365*3600);
+        } else {
+            setcookie('token_admin', $token, time() + 24*3600, null, null, false, true);
+            $expiration = date('Y-m-d H:i:s', time() + 24*3600);
+        }
+        $req = $db->prepare('INSERT INTO tokens_admin(token, user_id, expiration) VALUES (:cookie, (SELECT ID FROM admins WHERE email = :email), :expiration)');
         $req->execute(array(
             'cookie' => $token,
-            'email' => htmlspecialchars($_POST['email'])
+            'email' => htmlspecialchars($_POST['email']),
+            'expiration' => $expiration
         ));
-        if (isset($_POST['remember'])) {
-            setcookie('token', $token, time() + 24*365*3600, null, null, false, true);
-        } else {
-            setcookie('token', $token, time() + 24*3600, null, null, false, true);
-        }
         header('Location: index.php');
     } else {
         $error = [
