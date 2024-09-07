@@ -6,7 +6,8 @@ require 'vendor/autoload.php';
 
 class Utils
 {
-    public function checkCookie($cookie) {
+    public function checkCookie($cookie): bool
+    {
         include 'config.php';
         if(isset($_COOKIE[$cookie])) {
             $req = $db->prepare('SELECT COUNT(*) FROM tokens_admin WHERE token = :cookie');
@@ -24,7 +25,8 @@ class Utils
         }
     }
 
-    public function sendRecoveryEmail($email, $token) {
+    public function sendRecoveryEmail($email, $token): void
+    {
         $mail = new PHPMailer(true);
         include 'config.php';
         try {
@@ -47,7 +49,8 @@ class Utils
         }
     }
 
-    public function sendValidDiscountEmail($email, $code) {
+    public function sendValidDiscountEmail($email, $code): void
+    {
         $mail = new PHPMailer(true);
         include 'config.php';
         try {
@@ -70,7 +73,8 @@ class Utils
         }
     }
 
-    public function sendInvalidDiscountEmail($email) {
+    public function sendInvalidDiscountEmail($email): void
+    {
         $mail = new PHPMailer(true);
         include 'config.php';
         try {
@@ -93,7 +97,8 @@ class Utils
         }
     }
 
-    public function getProof($id) {
+    public function getProof($id): string
+    {
         include 'config.php';
         $req = $db->prepare('SELECT proof FROM discounts WHERE ID = :id');
         $req->execute(array(
