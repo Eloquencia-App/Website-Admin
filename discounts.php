@@ -48,11 +48,18 @@ if (isset($_GET['refuse']) && isset($_GET['id'])) {
     header('Location: discounts.php');
 }
 
-
 if (isset($_GET['proof']) && isset($_GET['id'])) {
     $data = $utils->getProof($_GET['id']);
     echo $data;
     exit();
+}
+
+if (isset($_POST['code'])) {
+    $req = $db->prepare('INSERT INTO discounts_codes (code) VALUES (:code)');
+    $req->execute(array(
+        'code' => htmlspecialchars($_POST['code'])
+    ));
+    header('Location: discounts.php');
 }
 ?>
 <!DOCTYPE html>
@@ -98,6 +105,16 @@ if (isset($_GET['proof']) && isset($_GET['id'])) {
     <div class="row">
         <div class="col-12 text-center">
             <h1 class="display-1">Réductions</h1>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDiscount">Ajouter un code de réduction</button>
+            <?php
+            if (!$utils->checkDiscountAvailable()) {
+                ?>
+                <div class="alert alert-warning" role="alert">
+                    Il n'y a plus de codes de réduction disponibles
+                </div>
+                <?php
+            }
+            ?>
         </div>
     </div>
     <div class="row mt-4 d-flex justify-content-center">
@@ -148,8 +165,33 @@ if (isset($_GET['proof']) && isset($_GET['id'])) {
         </div>
     </div>
 </div>
+<div class="modal fade" id="addDiscount" tabindex="-1" aria-labelledby="addDiscountLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDiscountLabel">Ajouter un code de réduction </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post">
+                <div class="modal-body" id="ModalBody">
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Code</label>
+                        <input type="text" class="form-control" id="code" name="code" required maxlength="10">
+                        <small id="codeHelp" class="form-text text-muted">Le code doit être unique et ne pas dépasser 10 caractères. Pensez à l'enregistrer dans HelloAsso !</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <footer class="bg-body-tertiary text-center text-lg-start footer fixed-bottom">
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+    <div class="text-center p-3">
         © 2024 Eloquéncia | Fait avec ❤️ et hébergé en France
         <div class="text-muted">Icons by Icons8</div>
     </div>

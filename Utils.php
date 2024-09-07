@@ -114,4 +114,17 @@ class Utils
         $req->execute();
         return $req->fetchAll();
     }
+
+    public function checkDiscountAvailable(): bool
+    {
+        include 'config.php';
+        $req = $db->prepare('SELECT COUNT(*) FROM discounts_codes WHERE email IS NULL');
+        $req->execute();
+        $req = $req->fetch();
+        if ($req[0] > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
