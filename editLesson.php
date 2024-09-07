@@ -72,7 +72,7 @@ $lesson = $req->fetch();
 <div class="container">
     <div class="row">
         <div class="col-12 text-center">
-            <h1 class="display-1 ">Ajouter une leçon</h1>
+            <h1 class="display-1 ">Modifier une leçon</h1>
             <a href="lessons" class="btn btn-secondary">Retour</a>
         </div>
     </div>
@@ -106,7 +106,6 @@ $lesson = $req->fetch();
                 <button type="submit" class="btn btn-success" name="submit">Enregistrer</button>
             </div>
         </form>
-
     </div>
 </div>
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
