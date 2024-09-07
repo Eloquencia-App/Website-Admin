@@ -117,7 +117,7 @@ if (isset($_POST['forgotSubmit'])) {
                         <input type="checkbox" class="form-check-input" id="remember" name="remember">
                         <label class="form-check" for="remember">Se souvenir de moi</label>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex gap-2 justify-content-between align-items-center mb-3">
                         <button type="submit" class="btn btn-primary" name="submit">Connexion</button>
                         <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#forgotModal">Mot de Passe oublié ?</button>
                     </div>
