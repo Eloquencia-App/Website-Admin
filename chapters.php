@@ -10,7 +10,7 @@ if (!$utils->checkCookie('token')) {
 }
 
 if (isset($_GET['delete']) && isset($_GET['id'])) {
-    $req = $db->prepare('DELETE FROM lessons WHERE ID = :id');
+    $req = $db->prepare('DELETE FROM lessons_chapters WHERE ID = :id');
     $req->execute(array(
         'id' => $_GET['id']
     ));
@@ -59,9 +59,9 @@ if (isset($_GET['delete']) && isset($_GET['id'])) {
 <div class="container">
     <div class="row">
         <div class="col-12 text-center">
-            <h1 class="display-1">Leçons</h1>
-            <a href="addLesson" class="btn btn-primary">Ajouter une leçon</a>
-            <a href="chapters" class="btn btn-secondary">Gérer les chapitres</a>
+            <h1 class="display-1">Chapitres</h1>
+            <a href="addChapter" class="btn btn-primary">Ajouter un chapitre</a>
+            <a href="lessons.php" class="btn btn-secondary">Retour</a>
         </div>
     </div>
     <div class="row mt-4 d-flex justify-content-center">
@@ -75,16 +75,16 @@ if (isset($_GET['delete']) && isset($_GET['id'])) {
             </thead>
             <tbody>
             <?php
-            $req = $db->prepare('SELECT ID, title, summary FROM lessons');
+            $req = $db->prepare('SELECT ID, name, description FROM lessons_chapters');
             $req->execute();
-            $lessons = $req->fetchAll();
-            foreach ($lessons as $lesson) {
+            $chapters = $req->fetchAll();
+            foreach ($chapters as $chapter) {
                 ?>
                 <tr>
-                    <td><?= $lesson['title'] ?></td>
-                    <td><?= $lesson['summary'] ?></td>
+                    <td><?= $chapter['name'] ?></td>
+                    <td><?= $chapter['description'] ?></td>
                     <td>
-                        <button class="btn btn-danger" onclick="deleteLesson('<?= $lesson['title']?>',<?= $lesson['ID']?>)"><i class="fas fa-trash"></i></button><a href="editLesson.php?id=<?= $lesson['ID']?>" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                        <button class="btn btn-danger" onclick="deleteChapter('<?= $chapter['name']?>',<?= $chapter['ID']?>)"><i class="fas fa-trash"></i></button><a href="editChapter.php?id=<?= $chapter['ID']?>" class="btn btn-primary"><i class="fas fa-edit"></i></a>
                     </td>
                 </tr>
                 <?php
@@ -98,11 +98,11 @@ if (isset($_GET['delete']) && isset($_GET['id'])) {
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Suppression d'une leçon</h5>
+                <h5 class="modal-title" id="deleteModalLabel">Suppression d'un chapitre</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="deleteModalBody">
-                Êtes-vous sûr de vouloir supprimer la leçon ?
+                Êtes-vous sûr de vouloir supprimer le chapitre ?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -112,20 +112,19 @@ if (isset($_GET['delete']) && isset($_GET['id'])) {
     </div>
 </div>
 <footer class="bg-body-tertiary text-center text-lg-start footer fixed-bottom">
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+    <div class="text-center p-3">
         © 2024 Eloquéncia | Fait avec ❤️ et hébergé en France
         <div class="text-muted">Icons by Icons8</div>
     </div>
 </footer>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    function deleteLesson(title, id) {
-        $('#deleteModalButton').attr('href', 'lessons.php?delete&id=' + id);
-        $('#deleteModalBody').html('Êtes-vous sûr de vouloir supprimer la leçon \"' + title + '\" ?');
+    function deleteChapter(title, id) {
+        $('#deleteModalButton').attr('href', 'chapters.php?delete&id=' + id);
+        $('#deleteModalBody').html('Êtes-vous sûr de vouloir supprimer le chapitre \"' + title + '\" ?');
 
         $('#deleteModal').modal('show');
     }
-
 </script>
 </body>
 </html>

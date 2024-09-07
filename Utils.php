@@ -102,4 +102,11 @@ class Utils
         $data = $req->fetch();
         return (base64_encode($data['proof']));
     }
+
+    public function getChaptersNameList() {
+        include 'config.php';
+        $req = $db->prepare('SELECT ID, name FROM lessons_chapters');
+        $req->execute();
+        return $req->fetchAll();
+    }
 }

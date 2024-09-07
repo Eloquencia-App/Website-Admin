@@ -14,11 +14,12 @@ if (!$utils->checkCookie('token')) {
 }
 
 if (isset($_POST['submit'])) {
-    $req = $db->prepare('INSERT INTO lessons (title, summary, content) VALUES (:title, :summary, :content)');
+    $req = $db->prepare('INSERT INTO lessons (title, summary, content, chapter) VALUES (:title, :summary, :content, :chapter)');
     $req->execute(array(
         'title' => htmlspecialchars($_POST['title']),
         'summary' => htmlspecialchars($_POST['description']),
-        'content' => htmlspecialchars($_POST['editor'])
+        'content' => htmlspecialchars($_POST['editor']),
+        'chapter' => htmlspecialchars($_POST['chapter'])
     ));
     header('Location: lessons');
 }
@@ -40,7 +41,7 @@ if (isset($_POST['submit'])) {
     <meta property="og:description" content="Eloquéncia est une association loi 1901 visant à promouvoir l'éloquence et l'art oratoire">
     <title>Accueil - Eloquéncia</title>
     <link rel="stylesheet" href="css/bootstrap.css">
-    <script src="js/bootstrap.js"></script>
+    <script src="js/bootstrap.bundle.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.6.0/css/all.css">
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote.min.css" rel="stylesheet">
 <body>
@@ -72,6 +73,17 @@ if (isset($_POST['submit'])) {
     </div>
     <div class="row mt-4 d-flex justify-content-center">
         <form method="post">
+            <div class="mb-3">
+                <label for="chapter" class="form-label">Chapitre</label>
+                <select class="form-select" id="chapter" required name="chapter">
+                    <?php
+                    $data = $utils->getChaptersNameList();
+                    foreach ($data as $chapter) {
+                        echo '<option value="' . $chapter['ID'] . '">' . $chapter['name'] . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
            <div class="mb-3">
                <label for="title" class="form-label">Titre</label>
                <input type="text" class="form-control" id="title" required name="title">
@@ -92,7 +104,7 @@ if (isset($_POST['submit'])) {
     </div>
 </div>
 <footer class="bg-body-tertiary text-center text-lg-start footer mt-5">
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+    <div class="text-center p-3">
         © 2024 Eloquéncia | Fait avec ❤️ et hébergé en France
         <div class="text-muted">Icons by Icons8</div>
     </div>
