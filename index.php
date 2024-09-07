@@ -104,6 +104,40 @@ if (!$utils->checkCookie('token_admin')) {
                 </div>
             </div>
         </div>
+        <div class="col-3 d-flex align-items-stretch">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4 text-center">
+                        <img class="img-fluid" src="https://img.icons8.com/color/100/user.png" alt="utilisateurs">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Utilisateurs</h5>
+                            <p class="card-text">Gérer les utilisateurs administrateurs</p>
+                            <a href="users" class="btn btn-primary">Accéder</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4 d-flex justify-content-center">
+        <div class="col-3 d-flex align-items-stretch">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4 text-center">
+                        <img class="img-fluid" src="https://img.icons8.com/color/100/group.png" alt="adhérents">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Adhérents</h5>
+                            <p class="card-text">Gérer les adhérents de l'association</p>
+                            <a href="subscribers" class="btn btn-primary">Accéder</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <footer class="bg-body-tertiary text-center text-lg-start footer fixed-bottom">
