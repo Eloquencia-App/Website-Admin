@@ -52,6 +52,7 @@ if (isset($_GET['delete']) && isset($_GET['id'])) {
                 <a class="nav-link" href="#">Leçons</a>
                 <a class="nav-link" href="discounts">Remises</a>
                 <a class="nav-link" href="contact">Contact</a>
+                <a class="nav-link" href="logout">Déconnexion</a>
             </div>
         </div>
     </div>

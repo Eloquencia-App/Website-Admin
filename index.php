@@ -44,7 +44,7 @@ if (!$utils->checkCookie('token_admin')) {
                 <a class="nav-link" href="lessons">Leçons</a>
                 <a class="nav-link" href="discounts">Remises</a>
                 <a class="nav-link" href="contact">Contact</a>
-            </div>
+                <a class="nav-link" href="logout">Déconnexion</a>
         </div>
     </div>
 </nav>
@@ -141,7 +141,7 @@ if (!$utils->checkCookie('token_admin')) {
     </div>
 </div>
 <footer class="bg-body-tertiary text-center text-lg-start footer fixed-bottom">
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+    <div class="text-center p-3">
         © 2024 Eloquéncia | Fait avec ❤️ et hébergé en France
         <div class="text-muted">Icons by Icons8</div>
     </div>

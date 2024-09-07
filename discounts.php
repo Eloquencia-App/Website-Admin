@@ -97,6 +97,7 @@ if (isset($_POST['code'])) {
                 <a class="nav-link" href="lessons">Leçons</a>
                 <a class="nav-link" href="#">Remises</a>
                 <a class="nav-link" href="contact">Contact</a>
+                <a class="nav-link" href="logout">Déconnexion</a>
             </div>
         </div>
     </div>
