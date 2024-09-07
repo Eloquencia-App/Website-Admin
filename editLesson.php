@@ -84,7 +84,11 @@ $lesson = $req->fetch();
                     <?php
                     $data = $utils->getChaptersNameList();
                     foreach ($data as $chapter) {
-                        echo '<option value="' . $chapter['ID'] . '">' . $chapter['name'] . '</option>';
+                        if ($chapter['ID'] == $lesson['chapter']) {
+                            echo '<option value="' . $chapter['ID'] . '" selected>' . $chapter['name'] . '</option>';
+                        } else {
+                            echo '<option value="' . $chapter['ID'] . '">' . $chapter['name'] . '</option>';
+                        }
                     }
                     ?>
                 </select>
