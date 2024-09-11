@@ -127,4 +127,14 @@ class Utils
             return false;
         }
     }
+
+    public function getMessage($id) {
+        include 'config.php';
+        $req = $db->prepare('SELECT message, email FROM contact WHERE ID = :id');
+        $req->execute(array(
+            'id' => $id
+        ));
+        $resp = $req->fetch();
+        return $resp['message'];
+    }
 }

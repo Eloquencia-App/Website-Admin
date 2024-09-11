@@ -98,7 +98,7 @@ if (!$utils->checkCookie('token_admin')) {
                         <div class="card-body">
                             <h5 class="card-title">Messagerie</h5>
                             <p class="card-text">Consulter les messages reçus</p>
-                            <a href="messages" class="btn btn-primary">Accéder</a>
+                            <a href="contact" class="btn btn-primary">Accéder</a>
                         </div>
                     </div>
                 </div>
