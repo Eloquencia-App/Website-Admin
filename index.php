@@ -138,6 +138,22 @@ if (!$utils->checkCookie('token_admin')) {
                 </div>
             </div>
         </div>
+        <div class="col-3 d-flex align-items-stretch">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4 text-center">
+                        <img class="img-fluid" src="https://img.icons8.com/color/100/settings--v1.png" alt="paramètres">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">Paramètres</h5>
+                            <p class="card-text">Modifier les paramètres du site et du LMS</p>
+                            <a href="settings" class="btn btn-primary">Accéder</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <footer class="bg-body-tertiary text-center text-lg-start footer fixed-bottom">
