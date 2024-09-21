@@ -128,7 +128,8 @@ class Utils
         }
     }
 
-    public function getMessage($id) {
+    public function getMessage($id)
+    {
         include 'config.php';
         $req = $db->prepare('SELECT message, email FROM contact WHERE ID = :id');
         $req->execute(array(
@@ -136,5 +137,26 @@ class Utils
         ));
         $resp = $req->fetch();
         return $resp['message'];
+    }
+
+    public function getLMSAnnouncement()
+    {
+        include 'config.php';
+        $req = $db->prepare('SELECT value, state FROM settings WHERE name = "announcement_lms"');
+        $req->execute();
+        $res = $req->fetch();
+        $res['value'] = json_decode($res['value'], true);
+        $res['value']['content'] = htmlspecialchars_decode($res['value']['content']);
+        return json_encode($res);
+    }
+
+    public function setLMSAnnouncement($title, $content, $state)
+    {
+        include 'config.php';
+        $req = $db->prepare('UPDATE settings SET value = :value, state = :state WHERE name = "announcement_lms"');
+        $req->execute(array(
+            'value' => json_encode(array('title' => $title, 'content' => $content)),
+            'state' => $state
+        ));
     }
 }
